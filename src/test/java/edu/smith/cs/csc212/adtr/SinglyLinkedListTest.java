@@ -50,6 +50,7 @@ public class SinglyLinkedListTest {
 		data.removeFront();
 	}
 	
+	
 	@Test(expected=EmptyListError.class)
 	public void testRemoveBackCrash() {
 		ListADT<String> data = makeEmptyList();
