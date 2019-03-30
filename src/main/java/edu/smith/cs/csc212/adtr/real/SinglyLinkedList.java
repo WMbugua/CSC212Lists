@@ -48,10 +48,11 @@ public class SinglyLinkedList<T> extends ListADT<T> {
 			if (count+1==index) {
 				tIndex = current.next;
 				current.next = current.next.next;
+				return tIndex.value;
 			}
 			count++;
 		}
-		return tIndex.value;
+		throw new BadIndexError(index);
 	}
 
 	@Override

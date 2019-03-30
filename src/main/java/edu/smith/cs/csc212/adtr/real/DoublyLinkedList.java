@@ -3,6 +3,8 @@ package edu.smith.cs.csc212.adtr.real;
 import edu.smith.cs.csc212.adtr.ListADT;
 import edu.smith.cs.csc212.adtr.errors.BadIndexError;
 import edu.smith.cs.csc212.adtr.errors.TODOErr;
+//.import edu.smith.cs.csc212.adtr.real.SinglyLinkedList.Node;
+//import edu.smith.cs.csc212.adtr.real.SinglyLinkedList.Node;
 
 
 public class DoublyLinkedList<T> extends ListADT<T> {
@@ -21,24 +23,75 @@ public class DoublyLinkedList<T> extends ListADT<T> {
 	@Override
 	public T removeFront() {
 		checkNotEmpty();
-		throw new TODOErr();
+		T initialStartValue = this.start.value;
+		this.start = this.start.after;
+		if (this.start == null) {
+			this.end = null;
+		} else {
+			this.start.before = null;
+		}
+		return initialStartValue;
+		//throw new TODOErr();
 	}
 
 	@Override
 	public T removeBack() {
 		checkNotEmpty();
-		throw new TODOErr();
+		T LValue = this.end.value;
+		this.end = this.end.before;
+		if (this.end==null) {
+			this.start = null;
+		}
+		else {
+			end.after = null;
+		}
+		return LValue;
+		//throw new TODOErr();
 	}
 
 	@Override
 	public T removeIndex(int index) {
 		checkNotEmpty();
-		throw new TODOErr();
+		int count = 0;
+		if (index==0) {
+			return this.removeFront();
+		}
+		else if (index == this.size()-1) {
+			Node<T> currentEnd = this.end;
+			this.end = this.end.before;
+			this.end.after = null;
+			return currentEnd.value;
+		}
+		else {
+			for (Node<T> current = this.start; current!=null; current = current.after) {
+				if (count==index) {
+					Node<T> previousNode = current.before;
+					Node<T> currentAfter= current.after;
+					previousNode.after = currentAfter;
+					currentAfter.before = previousNode;
+					return current.value;
+				}
+			count++;
+			}
+		}
+		throw new BadIndexError(index);
+
+		//throw new TODOErr();
 	}
 
 	@Override
 	public void addFront(T item) {
-		throw new TODOErr();
+		Node<T> initialStart = this.start;
+		this.start = new Node<T> (item);
+		start.after = initialStart;
+		start.before = null;
+		if (initialStart==null) {
+			this.end = this.start;
+		}
+		else {
+			initialStart.before = start;
+		}
+		//throw new TODOErr();
 	}
 
 	@Override
@@ -55,36 +108,91 @@ public class DoublyLinkedList<T> extends ListADT<T> {
 
 	@Override
 	public void addIndex(int index, T item) {
-		throw new TODOErr();
+		int count = 0;
+		if (index==0) {
+			addFront(item);
+			return;
+		}
+		else {
+			for (Node<T> current = this.start; current!=null; current = current.after) {
+				if (count+1==index) {
+					Node<T> oldAfter = current.after;
+					Node<T> newAfter = new Node<T>(item);
+					current.after = newAfter;
+					newAfter.after = oldAfter;
+					newAfter.before = current;
+					if (oldAfter==null) {
+						this.end = newAfter;
+					}
+					else {
+						oldAfter.before = newAfter;
+					}
+					return;
+				}
+			count++;
+			}
+		}
+		throw new BadIndexError(index);
+
+		//throw new TODOErr();
 	}
 
 	@Override
 	public T getFront() {
-		throw new TODOErr();
+		checkNotEmpty();
+		return this.start.value;
+		//throw new TODOErr();
 	}
 
 	@Override
 	public T getBack() {
-		throw new TODOErr();
+		checkNotEmpty();
+		return this.end.value;
+		//throw new TODOErr();
 	}
 	
 	@Override
 	public T getIndex(int index) {
-		throw new TODOErr();
+		checkNotEmpty();
+		int at = 0;
+		for (Node<T> n = this.start; n != null; n = n.after) {
+			if (at++ == index) {
+				return n.value;
+			}
+		}
+		throw new BadIndexError(index);
+		//throw new TODOErr();
 	}
 	
 	public void setIndex(int index, T value) {
-		throw new TODOErr();
+		checkNotEmpty();
+		int count = 0;
+		for (Node<T> current = this.start; current!=null; current = current.after) {
+			if (count==index) {
+				current.value = value;
+				return;
+			}
+			count++;
+		}
+		
+		throw new BadIndexError(index);
+		//throw new TODOErr();
 	}
 
 	@Override
 	public int size() {
-		throw new TODOErr();
+		int count = 0;
+		for (Node<T> n = this.start; n != null; n = n.after) {
+			count++;
+		}
+		return count;
+		//throw new TODOErr();
 	}
 
 	@Override
 	public boolean isEmpty() {
-		throw new TODOErr();
+		return this.start==null && this.end==null;
+		//throw new TODOErr();
 	}
 	
 	/**
